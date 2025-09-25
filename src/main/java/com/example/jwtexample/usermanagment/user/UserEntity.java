@@ -1,6 +1,7 @@
 package com.example.jwtexample.usermanagment.user;
 
 import com.example.jwtexample.common.entity.BaseEntity;
+import com.example.jwtexample.enums.Salutation;
 import com.example.jwtexample.usermanagment.role.RoleEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -33,6 +34,10 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "password")
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "salutation")
+    private Salutation salutation;
 
     @Column(name = "first_name")
     private String firstName;

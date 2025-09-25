@@ -1,5 +1,6 @@
 package com.example.jwtexample.usermanagment.user.dto;
 
+import com.example.jwtexample.enums.Salutation;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -21,6 +22,8 @@ public class UserResponseDto {
 
     private LocalDate dateOfBirth;
 
+    private Salutation salutation;
+
     public UserResponseDto(
             Long id,
             String username,
@@ -28,7 +31,8 @@ public class UserResponseDto {
             String firstName,
             String lastName,
             String phoneNumber,
-            LocalDate dateOfBirth
+            LocalDate dateOfBirth,
+            Salutation salutation
     ) {
         this.id = id;
         this.username = username;
@@ -37,5 +41,6 @@ public class UserResponseDto {
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
+        this.salutation = salutation;
     }
 }

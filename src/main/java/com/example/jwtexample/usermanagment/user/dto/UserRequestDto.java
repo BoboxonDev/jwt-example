@@ -1,6 +1,7 @@
 package com.example.jwtexample.usermanagment.user.dto;
 
 import com.example.jwtexample.enums.ERole;
+import com.example.jwtexample.enums.Salutation;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,8 @@ public class UserRequestDto {
 
     @NotNull
     private ERole role;
+
+    private Salutation salutation;
 
     @NotBlank
     private String password;

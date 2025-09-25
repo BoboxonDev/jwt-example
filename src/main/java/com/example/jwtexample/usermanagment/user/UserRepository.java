@@ -30,7 +30,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
       user.firstName,
       user.lastName,
       user.phoneNumber,
-      user.dateOfBirth
+      user.dateOfBirth,
+      user.salutation
       ) from UserEntity user
       left join user.roles role
       where user.deletedAt is null and role.id = :#{#roleId}

@@ -1,5 +1,6 @@
 package com.example.jwtexample.usermanagment.user.dto;
 
+import com.example.jwtexample.enums.Salutation;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -17,4 +18,6 @@ public class UserUpdateRequestDto {
     private LocalDate birtOfDate;
 
     private String phoneNumber;
+
+    private Salutation salutation;
 }

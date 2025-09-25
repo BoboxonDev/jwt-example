@@ -1,5 +1,6 @@
 package com.example.jwtexample.usermanagment.auth.dto;
 
+import com.example.jwtexample.enums.Salutation;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -21,6 +22,8 @@ public class RegisterRequestDto {
 
     @NotBlank
     private String confirmPassword;
+
+    private Salutation salutation;
 
     @NotBlank
     private String firstName;
