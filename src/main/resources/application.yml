@@ -1,0 +1,29 @@
+server:
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: jwtexample
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jwt-exam-db
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    enabled: false
+
+jwt:
+  secret: c8d4b399-edf7-45b9-aea0-e4a2e83db6a3
+  expiration: 36000000
+  refresh-token-expiration: 2592000000

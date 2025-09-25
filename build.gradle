@@ -1,0 +1,78 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.5'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.liquibase.gradle' version '2.2.0'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // === SPRING BOOT STARTERS ===
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // === DATABASE & ORM ===
+    implementation 'org.postgresql:postgresql:42.7.3'
+    implementation 'org.liquibase:liquibase-core'
+
+    // === MAPPER (MAPSTRUCT) ===
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+    // === LOMBOK ===
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+    // === OPENAPI / DOCUMENTATION ===
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
+
+    // === JWT / AUTHENTICATION ===
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Feign Client implementations
+//    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+//    implementation 'io.github.openfeign.form:feign-form-spring:3.8.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // === KAFKA ===
+//    implementation "org.springframework.kafka:spring-kafka"
+
+}
+
+dependencyManagement {
+    imports {
+        // Spring Cloud
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2024.0.2"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
