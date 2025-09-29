@@ -15,9 +15,9 @@ public class SwaggerConfig {
     public OpenAPI customOpenApi() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Jwt Example")
+                        .title("Pos")
                         .version("v1")
-                        .description("Jwt Example endpoints")
+                        .description("Pos endpoints")
                 )
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components()

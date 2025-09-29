@@ -1,6 +1,6 @@
 package com.example.jwtexample.enums;
 
-public enum     ERole {
+public enum ERole {
 
     USER,
     ADMIN,
