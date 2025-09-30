@@ -20,12 +20,24 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByUsernameAndDeletedAtIsNull(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
+        return buildUserDetails(user);
+    }
+
+    public UserDetails loadUserByUsername(String username, Long tenantId) throws UsernameNotFoundException {
+        UserEntity user = userRepository.findByUsernameAndDeletedAtIsNull(username)
+                .filter(u -> u.getTenantId().equals(tenantId))
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "User not found for username: " + username + " and tenantId: " + tenantId));
+
+        return buildUserDetails(user);
+    }
+
+    private CustomUserDetails buildUserDetails(UserEntity user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .flatMap(role -> role.getPermissions().stream())
                 .map(permission -> new SimpleGrantedAuthority(
@@ -37,6 +49,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 user.getId(),
                 user.getUsername(),
                 user.getPassword(),
+                user.getTenantId(),
                 authorities
         );
     }

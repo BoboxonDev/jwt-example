@@ -44,7 +44,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
 
             String username = jwtUtil.extractUsername(refreshToken);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            Long tenantId = jwtUtil.extractTenantId(refreshToken);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username, tenantId);
 
             if (!jwtUtil.isTokenValid(refreshToken, userDetails)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token is invalid");
@@ -53,10 +54,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             UserEntity user = userRepository.findByUsernameAndDeletedAtIsNull(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            Long tenantId = user.getTenantId();
 
-            String newAccessToken = jwtUtil.generateToken(user, tenantId);
-            String newRefreshToken = jwtUtil.generateRefreshToken(user, tenantId);
+
+            String newAccessToken = jwtUtil.generateToken(user, user.getTenantId());
+            String newRefreshToken = jwtUtil.generateRefreshToken(user, user.getTenantId());
 
             return new AuthenticationResponse(
                     newAccessToken,

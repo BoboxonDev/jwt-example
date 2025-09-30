@@ -43,6 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String username = jwtUtil.extractUsername(token);
+            Long tenantId = jwtUtil.extractTenantId(token);
             Long userId = jwtUtil.extractUserId(token);
             String tokenType = jwtUtil.extractTokenType(token);
             String tokenId = jwtUtil.extractTokenId(token);
@@ -52,22 +53,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username, tenantId);
 
                 if (jwtUtil.isTokenValid(token, userDetails)) {
-                    CustomUserDetails customUserDetails = new CustomUserDetails(
-                            userId,
-                            userDetails.getUsername(),
-                            userDetails.getPassword(),
-                            userDetails.getAuthorities()
-                    );
-
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    customUserDetails,
-                                    null,
-                                    customUserDetails.getAuthorities()
-                            );
+                    UsernamePasswordAuthenticationToken authToken = getUsernamePasswordAuthenticationToken(userId, userDetails, tenantId);
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -87,6 +76,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(Long userId, UserDetails userDetails, Long tenantId) {
+        CustomUserDetails customUserDetails = new CustomUserDetails(
+                userId,
+                userDetails.getUsername(),
+                userDetails.getPassword(),
+                tenantId,
+                userDetails.getAuthorities()
+        );
+
+        return new UsernamePasswordAuthenticationToken(
+                customUserDetails,
+                null,
+                customUserDetails.getAuthorities()
+        );
     }
 
     @Override

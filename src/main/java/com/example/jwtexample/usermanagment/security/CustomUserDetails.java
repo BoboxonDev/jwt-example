@@ -12,15 +12,18 @@ public class CustomUserDetails implements UserDetails {
 
     private final String username;
 
+    private final Long tenantId;
+
     private final String password;
 
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(Long id, String username, String password,
+    public CustomUserDetails(Long id, String username, String password,Long tenantId,
                              Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.tenantId = tenantId;
         this.authorities = authorities;
     }
 
@@ -37,6 +40,8 @@ public class CustomUserDetails implements UserDetails {
     public String getPassword() {
         return password;
     }
+
+    public Long getTenantId() {return tenantId;}
 
     @Override
     public String getUsername() {
