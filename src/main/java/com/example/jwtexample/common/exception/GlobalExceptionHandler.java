@@ -2,6 +2,7 @@ package com.example.jwtexample.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -10,47 +11,49 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
-        ErrorResponse response = new ErrorResponse(
-                e.getMessage(),
-                "RESOURCE_NOT_FOUND",
-                LocalDateTime.now()
-        );
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ErrorResponse> handleApiException(ApiException e) {
+        ErrorCode errorCode = e.getErrorCode();
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        ErrorResponse response = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .errorCode(errorCode.getCode())
+                .message(e.getMessage())
+                .source("API")
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(errorCode.getStatus()).body(response);
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException e) {
-        ErrorResponse response = new ErrorResponse(
-                e.getMessage(),
-                "BAD_REQUEST",
-                LocalDateTime.now()
-        );
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnexpected(Exception e) {
+        ErrorResponse response = ErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .errorCode("INTERNAL_ERROR")
+                .message("Unexpected error occurred")
+                .source("API")
+                .timestamp(LocalDateTime.now())
+                .build();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
-    @ExceptionHandler(DuplicateException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateException(DuplicateException e) {
-        ErrorResponse response = new ErrorResponse(
-                e.getMessage(),
-                "DUPLICATE_EXCEPTION",
-                LocalDateTime.now()
-        );
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .findFirst()
+                .orElse("Validation failed");
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-    }
+        ErrorResponse response = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .errorCode("VALIDATION_ERROR")
+                .message(message)
+                .source("VALIDATION")
+                .timestamp(LocalDateTime.now())
+                .build();
 
-    @ExceptionHandler(PasswordMismatchException.class)
-    public ResponseEntity<ErrorResponse> handlePasswordMismatchException(
-            PasswordMismatchException ex) {
-        ErrorResponse response = new ErrorResponse(
-                ex.getMessage(),
-                "PASSWORD_MISMATCH_EXCEPTION",
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        return ResponseEntity.badRequest().body(response);
     }
 }

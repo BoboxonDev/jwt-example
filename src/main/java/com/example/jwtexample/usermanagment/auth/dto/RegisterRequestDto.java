@@ -3,6 +3,7 @@ package com.example.jwtexample.usermanagment.auth.dto;
 import com.example.jwtexample.enums.Salutation;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -33,5 +34,6 @@ public class RegisterRequestDto {
 
     private LocalDate dateOfBirth;
 
+    @Pattern(regexp = "[0-9]{9,15}$", message = "Phone number must be between 9 and 15 digits")
     private String phoneNumber;
 }

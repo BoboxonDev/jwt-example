@@ -1,9 +1,6 @@
 package com.example.jwtexample.common.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,9 +8,11 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ErrorResponse {
-
+    private int status;
     private String message;
+    private String source;
     private String errorCode;
     private LocalDateTime timestamp;
 }
