@@ -24,6 +24,24 @@ spring:
   liquibase:
     enabled: false
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: pos-backend-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      retries: 3
+      properties:
+        linger.ms: 5
+
 jwt:
   secret: c8d4b399-edf7-45b9-aea0-e4a2e83db6a3
   expiration: 36000000

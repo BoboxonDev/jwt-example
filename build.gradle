@@ -62,8 +62,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     // === KAFKA ===
-//    implementation "org.springframework.kafka:spring-kafka"
+    implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
 
+    // JSON Serializer for Kafka
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 }
 
 dependencyManagement {
