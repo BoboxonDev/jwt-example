@@ -22,17 +22,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsernameAndDeletedAtIsNull(username)
+        UserEntity user = userRepository.findByUsernameWithRolesAndPermissions(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         return buildUserDetails(user);
     }
 
-    @Transactional
     public UserDetails loadUserByUsername(String username, Long tenantId) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsernameAndDeletedAtIsNull(username)
+        UserEntity user = userRepository.findByUsernameWithRolesAndPermissions(username)
                 .filter(u -> Objects.equals(u.getTenantId(), tenantId))
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "User not found for username: " + username + " and tenantId: " + tenantId));
