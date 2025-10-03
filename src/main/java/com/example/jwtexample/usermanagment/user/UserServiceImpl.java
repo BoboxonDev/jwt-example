@@ -134,13 +134,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(UserRequestDto userRequestDto) {
 
-        if (userRepository.existsByEmailAndDeletedAtIsNull(userRequestDto.getUsername())) {
-            throw new DuplicateException("Username already exists with this email: " + userRequestDto.getUsername());
+        if (userRepository.findByUsernameAndDeletedAtIsNull(userRequestDto.getUsername()).isPresent()) {
+            throw new DuplicateException("Username already exists with this username: " + userRequestDto.getUsername());
         }
 
-        if (userRepository.existsByEmailAndDeletedAtIsNull(userRequestDto.getEmail())) {
-            throw new DuplicateException("Email already exists with this email: " + userRequestDto.getEmail());
+
+        if (userRepository.findByUsernameAndDeletedAtIsNull(userRequestDto.getUsername()).isPresent()) {
+            throw new DuplicateException("Username already exists with this username: " + userRequestDto.getUsername());
         }
+
 
         var user = userMapper.toEntityAdmin(userRequestDto);
         user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
