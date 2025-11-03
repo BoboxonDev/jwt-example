@@ -1,7 +1,7 @@
 package com.example.jwtexample.companymanagement.tenant;
 
 import com.example.jwtexample.common.exception.ResourceNotFoundException;
-import com.example.jwtexample.companymanagement.company.CompanyRepository;
+import com.example.jwtexample.company.CompanyRepository;
 import com.example.jwtexample.companymanagement.tenant.dto.TenantRequestDto;
 import com.example.jwtexample.companymanagement.tenant.dto.TenantResponseDto;
 import com.example.jwtexample.companymanagement.tenant.dto.TenantUpdateRequestDto;

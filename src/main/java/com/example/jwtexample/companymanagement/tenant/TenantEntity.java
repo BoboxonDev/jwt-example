@@ -1,7 +1,7 @@
 package com.example.jwtexample.companymanagement.tenant;
 
 import com.example.jwtexample.common.entity.BaseEntity;
-import com.example.jwtexample.companymanagement.company.CompanyEntity;
+import com.example.jwtexample.company.CompanyEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,5 +1,6 @@
 package com.example.jwtexample.common.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,30 +14,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(ApiException e) {
-        ErrorCode errorCode = e.getErrorCode();
+        ApiError errorCode = e.getApiError();
 
         ErrorResponse response = ErrorResponse.builder()
-                .status(errorCode.getStatus().value())
-                .errorCode(errorCode.getCode())
+                .status(errorCode.getStatus())
+                .errorCode(errorCode.getMessage())
                 .message(e.getMessage())
                 .source("API")
                 .timestamp(LocalDateTime.now())
                 .build();
 
         return ResponseEntity.status(errorCode.getStatus()).body(response);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleUnexpected(Exception e) {
-        ErrorResponse response = ErrorResponse.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .errorCode("INTERNAL_ERROR")
-                .message("Unexpected error occurred")
-                .source("API")
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -55,5 +43,30 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ApiErrorResponse> handleFileStorageException(FileStorageException ex,
+                                                                       HttpServletRequest request) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                ex.getStatus().value(),
+                ex.getStatus().getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(response, ex.getStatus());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleGenericException(Exception ex,
+                                                                   HttpServletRequest request) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                500,
+                "Internal Server Error",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.internalServerError().body(response);
     }
 }

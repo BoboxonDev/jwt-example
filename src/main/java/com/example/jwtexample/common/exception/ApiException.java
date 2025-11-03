@@ -1,14 +1,14 @@
 package com.example.jwtexample.common.exception;
 
 public class ApiException extends RuntimeException {
-    private final ErrorCode errorCode;
+    private final ApiError apiError;
 
-    public ApiException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
+    public ApiException(ApiError apiError) {
+        super(apiError.getMessage());
+        this.apiError = apiError;
     }
 
-    public ErrorCode getErrorCode() {
-        return errorCode;
+    public ApiError getApiError() {
+        return apiError;
     }
 }

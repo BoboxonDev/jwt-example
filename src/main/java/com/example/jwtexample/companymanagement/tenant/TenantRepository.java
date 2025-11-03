@@ -17,11 +17,7 @@ public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
     @Query("""
        select new com.example.jwtexample.companymanagement.tenant.dto.TenantResponseDto(
        tenant.id,
-       tenant.company.id,
-       company.name,
-       company.email,
-       company.phoneNumber,
-       company.isActive,
+       company.id,
        tenant.name,
        tenant.subscriptionPlan,
        tenant.isActive
