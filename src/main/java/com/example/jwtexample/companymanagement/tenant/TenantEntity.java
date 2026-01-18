@@ -1,5 +1,6 @@
 package com.example.jwtexample.companymanagement.tenant;
 
+import com.example.jwtexample.auditing.AuditLogAware;
 import com.example.jwtexample.common.entity.BaseEntity;
 import com.example.jwtexample.company.CompanyEntity;
 import jakarta.persistence.*;
@@ -12,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class TenantEntity extends BaseEntity {
+public class TenantEntity extends BaseEntity implements AuditLogAware {
 
     public static final String GENERATOR_NAME = "tenants_gen";
     public static final String SEQUENCE_NAME = "tenants_seq";

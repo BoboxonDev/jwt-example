@@ -1,5 +1,7 @@
 package com.example.jwtexample.lock.account;
 
+import com.example.jwtexample.auditing.AuditLogAware;
+import com.example.jwtexample.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +10,7 @@ import lombok.Setter;
 @Table(name = "products")
 @Getter
 @Setter
-public class AccountEntity {
+public class AccountEntity extends BaseEntity implements AuditLogAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

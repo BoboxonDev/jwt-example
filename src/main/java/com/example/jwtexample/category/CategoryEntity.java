@@ -1,5 +1,6 @@
 package com.example.jwtexample.category;
 
+import com.example.jwtexample.auditing.AuditLogAware;
 import com.example.jwtexample.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class CategoryEntity extends BaseEntity {
+public class CategoryEntity extends BaseEntity implements AuditLogAware {
 
     public static final String GENERATOR_NAME = "categories_gen";
     public static final String SEQUENCE_NAME = "categories_seq";
