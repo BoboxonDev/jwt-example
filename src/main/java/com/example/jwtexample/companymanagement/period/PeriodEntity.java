@@ -1,5 +1,6 @@
 package com.example.jwtexample.companymanagement.period;
 
+import com.example.jwtexample.auditing.AuditLogAware;
 import com.example.jwtexample.common.entity.BaseEntity;
 import com.example.jwtexample.companymanagement.tenant.TenantEntity;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class PeriodEntity extends BaseEntity {
+public class PeriodEntity extends BaseEntity implements AuditLogAware {
 
     public static final String GENERATOR_NAME = "periods_gen";
     public static final String SEQUENCE_NAME = "periods_seq";

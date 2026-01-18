@@ -1,5 +1,6 @@
 package com.example.jwtexample.company;
 
+import com.example.jwtexample.auditing.AuditLogAware;
 import com.example.jwtexample.common.entity.BaseEntity;
 import com.example.jwtexample.company.model.CompanyAccount;
 import com.example.jwtexample.company.model.CompanyBranch;
@@ -28,7 +29,7 @@ import java.util.List;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class CompanyEntity extends BaseEntity {
+public class CompanyEntity extends BaseEntity implements AuditLogAware {
 
   public static final String GENERATOR_NAME = "companies_gen";
   public static final String SEQUENCE_NAME = "companies_seq";

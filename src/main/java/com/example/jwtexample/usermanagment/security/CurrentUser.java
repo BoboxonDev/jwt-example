@@ -1,5 +1,6 @@
 package com.example.jwtexample.usermanagment.security;
 
+import com.example.jwtexample.usermanagment.user.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -31,5 +32,14 @@ public class CurrentUser {
         }
 
         return authentication.getName();
+    }
+
+    public static String getFullName(UserRepository userRepository) {
+        String username = getUsername();
+        if (username == null) return null;
+
+        return userRepository.findByUsernameAndDeletedAtIsNull(username)
+            .map(u -> (u.getFirstName() + " " + u.getLastName()).trim())
+            .orElse(null);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.jwtexample.usermanagment.user;
 
+import com.example.jwtexample.auditing.AuditLogAware;
 import com.example.jwtexample.common.entity.BaseEntity;
 import com.example.jwtexample.enums.Salutation;
 import com.example.jwtexample.usermanagment.role.RoleEntity;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class UserEntity extends BaseEntity {
+public class UserEntity extends BaseEntity implements AuditLogAware {
 
     public static final String GENERATOR_NAME = "user_gen";
     public static final String SEQUENCE_NAME = "user_seq";

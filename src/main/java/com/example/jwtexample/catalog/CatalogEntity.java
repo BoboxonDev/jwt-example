@@ -1,5 +1,6 @@
 package com.example.jwtexample.catalog;
 
+import com.example.jwtexample.auditing.AuditLogAware;
 import com.example.jwtexample.category.CategoryEntity;
 import com.example.jwtexample.common.entity.BaseEntity;
 import com.example.jwtexample.company.CompanyEntity;
@@ -20,7 +21,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class CatalogEntity extends BaseEntity {
+public class CatalogEntity extends BaseEntity implements AuditLogAware {
 
     public static final String GENERATOR_NAME = "catalogs_gen";
     public static final String SEQUENCE_NAME = "catalogs_seq";
