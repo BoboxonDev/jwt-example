@@ -37,7 +37,7 @@ public class ConsumerKafkaConfig {
 
   private final KafkaTemplate<String, Object> kafkaTemplate;
 
-  private Map<String, Object> consumerConfig() {
+  private Map<String, Object> consumerConfigs() {
     Map<String, Object> props = new HashMap<>();
     props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -46,27 +46,24 @@ public class ConsumerKafkaConfig {
     props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
     props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 1_200_000);
 
-    props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-
+    props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.example.jwtexample");
+    props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, AuditAllListRequestDto.class);
     props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
-
-    props.put(JsonDeserializer.VALUE_DEFAULT_TYPE,
-        AuditAllListRequestDto.class);
 
     return props;
   }
 
   @Bean
-  public DefaultKafkaConsumerFactory<String, AuditAllListRequestDto> consumerKafkaFactory() {
-    return new DefaultKafkaConsumerFactory<>(consumerConfig());
+  public DefaultKafkaConsumerFactory<String, Object> consumerKafkaFactory() {
+    return new DefaultKafkaConsumerFactory<>(consumerConfigs());
   }
 
   @Bean
-  public ConcurrentKafkaListenerContainerFactory<String, AuditAllListRequestDto> kafkaListenerContainerFactory(
-      DefaultKafkaConsumerFactory<String, AuditAllListRequestDto> consumerFactory,
+  public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(
+      DefaultKafkaConsumerFactory<String, Object> consumerFactory,
       DefaultErrorHandler kafkaErrorHandler
   ) {
-    var factory = new ConcurrentKafkaListenerContainerFactory<String, AuditAllListRequestDto>();
+    var factory = new ConcurrentKafkaListenerContainerFactory<String, Object>();
     factory.setConsumerFactory(consumerFactory);
     factory.setConcurrency(1);
     factory.getContainerProperties().setPollTimeout(3000L);
@@ -76,11 +73,12 @@ public class ConsumerKafkaConfig {
   }
 
   @Bean
-  public DefaultErrorHandler errorHandler() {
+  public DefaultErrorHandler kafkaErrorHandler() {
+
     var recoverer = new DeadLetterPublishingRecoverer(
         kafkaTemplate,
-        (record, e) -> {
-          log.error("Error processing record. Sending to DLT: {}", record, e);
+        (record, ex) -> {
+          log.error("Error processing record. Sending to DLT: {}", record, ex);
           return new TopicPartition("dead-letter-topic", record.partition());
         }
     );
@@ -88,9 +86,9 @@ public class ConsumerKafkaConfig {
     var backOff = new FixedBackOff(RETRY_INTERVAL_MS, RETRY_ATTEMPTS);
     var errorHandler = new DefaultErrorHandler(recoverer, backOff);
 
-    errorHandler.setRetryListeners((record, ex, deliveryAttempt) ->
+    errorHandler.setRetryListeners((record, ex, attempt) ->
         log.warn("Retry attempt {}/{} for record {} failed. Exception: {}",
-            deliveryAttempt, RETRY_ATTEMPTS, record, ex.getMessage())
+            attempt, RETRY_ATTEMPTS, record, ex.getMessage())
     );
 
     errorHandler.addNotRetryableExceptions(
